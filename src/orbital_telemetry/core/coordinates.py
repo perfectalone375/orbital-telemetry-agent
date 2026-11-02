@@ -100,3 +100,4 @@ class GeodeticCoordinates:
         z = (n * (1.0 - e2) + self.altitude_km) * sin_lat
 
         return ECEFCoordinates(x_km=x, y_km=y, z_km=z)
+
