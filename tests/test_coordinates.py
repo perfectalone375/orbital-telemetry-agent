@@ -1,4 +1,3 @@
-import pytest
 from orbital_telemetry.core.coordinates import GeodeticCoordinates
 
 def test_footprint_radius():
