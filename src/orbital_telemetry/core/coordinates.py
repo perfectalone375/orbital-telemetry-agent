@@ -1,4 +1,4 @@
-"""
+﻿"""
 Coordinate transformations: ECI (Inertial), ECEF (Terrestrial), and WGS-84 Geodetic.
 """
 
@@ -101,3 +101,9 @@ class GeodeticCoordinates:
 
         return ECEFCoordinates(x_km=x, y_km=y, z_km=z)
 
+    def footprint_radius_km(self) -> float:
+        r_earth = R_EARTH_EQUATORIAL_KM
+        if self.altitude_km <= 0:
+            return 0.0
+        theta = math.acos(r_earth / (r_earth + self.altitude_km))
+        return r_earth * theta
