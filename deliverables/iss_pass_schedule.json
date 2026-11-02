@@ -1,0 +1,14 @@
+{
+  "mission": "ISS Ground Station Pass Scheduler",
+  "ground_station": "Hyderabad-GS",
+  "satellite": "ISS (ZARYA)",
+  "norad_id": 25544,
+  "next_passes": [
+    {
+      "aos_time_s": 1260.0,
+      "los_time_s": 1830.0,
+      "duration_s": 570.0,
+      "max_elevation_deg": 72.4
+    }
+  ]
+}

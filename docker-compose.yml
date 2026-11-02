@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  test:
+    build:
+      context: .
+      target: test
+    command: ["pytest", "-v", "tests/"]
+
+  track:
+    build:
+      context: .
+      target: runtime
+    command: ["passes", "--lat", "17.3850", "--lon", "78.4867", "--name", "Hyderabad-GS"]

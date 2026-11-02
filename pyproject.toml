@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orbital-telemetry-agent"
+version = "0.1.0"
+description = "Autonomous Satellite Orbit Propagator, Ground Station Pass Tracker & Model Context Protocol (MCP) Server in Python."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Gopi Naga Vignesh Thirupati", email = "86792499+perfectalone375@users.noreply.github.com" }
+]
+keywords = [
+    "aerospace",
+    "orbital-mechanics",
+    "satellite-tracking",
+    "tle",
+    "sgp4",
+    "mcp",
+    "model-context-protocol",
+    "doppler-shift",
+    "ground-station",
+    "open-source"
+]
+dependencies = [
+    "numpy>=1.22.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0"
+]
+
+[project.scripts]
+orbitctl = "orbital_telemetry.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]
