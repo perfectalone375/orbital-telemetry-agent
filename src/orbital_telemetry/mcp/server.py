@@ -7,6 +7,7 @@ import sys
 from typing import Any, Dict
 from orbital_telemetry.core.tle import TLE
 from orbital_telemetry.core.propagator import KeplerianPropagator
+from orbital_telemetry.core.maneuvers import hohmann_transfer, combined_hohmann_plane_change
 from orbital_telemetry.tracking.ground_station import GroundStation
 from orbital_telemetry.tracking.pass_predictor import PassPredictor
 from orbital_telemetry.tracking.doppler import DopplerCalculator
@@ -50,6 +51,19 @@ TOOLS = [
                 "carrier_frequency_mhz": {"type": "number", "default": 437.5},
                 "dt_seconds": {"type": "number", "default": 100.0}
             }
+        }
+    },
+    {
+        "name": "calculate_hohmann_transfer",
+        "description": "Calculate orbital transfer Delta-V budget, burns, and time-of-flight between circular orbits.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "r1_km": {"type": "number", "description": "Initial orbit radius in km (e.g. LEO 6700)", "default": 6700.0},
+                "r2_km": {"type": "number", "description": "Target orbit radius in km (e.g. GEO 42164)", "default": 42164.0},
+                "inclination_change_deg": {"type": "number", "description": "Plane change angle in degrees (optional)", "default": 0.0}
+            },
+            "required": ["r1_km", "r2_km"]
         }
     }
 ]
@@ -118,6 +132,14 @@ def handle_doppler(args: Dict[str, Any]) -> Dict[str, Any]:
         "range_rate_km_s": res["range_rate_km_s"]
     }
 
+def handle_hohmann(args: Dict[str, Any]) -> Dict[str, Any]:
+    r1 = float(args.get("r1_km", 6700.0))
+    r2 = float(args.get("r2_km", 42164.0))
+    di = float(args.get("inclination_change_deg", 0.0))
+    if di > 0:
+        return combined_hohmann_plane_change(r1, r2, di)
+    return hohmann_transfer(r1, r2).to_dict()
+
 def process_message(msg: Dict[str, Any]) -> Dict[str, Any]:
     method = msg.get("method")
     msg_id = msg.get("id")
@@ -143,6 +165,8 @@ def process_message(msg: Dict[str, Any]) -> Dict[str, Any]:
             res = handle_passes(args)
         elif name == "calculate_doppler_shift":
             res = handle_doppler(args)
+        elif name == "calculate_hohmann_transfer":
+            res = handle_hohmann(args)
         else:
             return {"jsonrpc": "2.0", "id": msg_id, "error": {"code": -32601, "message": "Unknown tool"}}
         return {"jsonrpc": "2.0", "id": msg_id, "result": {"content": [{"type": "text", "text": json.dumps(res, indent=2)}]}}
