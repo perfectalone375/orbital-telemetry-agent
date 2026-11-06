@@ -139,3 +139,4 @@ def combined_hohmann_plane_change(
         "total_delta_v_km_s": round(total_dv, 4),
         "transfer_duration_hours": round(hohmann.transfer_duration_hours, 3),
     }
+

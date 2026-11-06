@@ -61,3 +61,4 @@ def test_combined_hohmann_plane_change():
 def test_invalid_radii():
     with pytest.raises(ValueError, match="strictly positive"):
         hohmann_transfer(-100.0, 42000.0)
+

@@ -2,9 +2,10 @@
 
 [![CI Build & Test Matrix](https://github.com/perfectalone375/orbital-telemetry-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/perfectalone375/orbital-telemetry-agent/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
 [![MCP Server](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-8A2BE2.svg)](deliverables/mcp_orbital_guide.md)
-[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![Tests Passing](https://img.shields.io/badge/tests-15%20passed-brightgreen.svg)](tests/)
 
 **`orbital-telemetry-agent`** is an open-source, high-precision autonomous satellite orbit propagator, ground station pass predictor, and **Model Context Protocol (MCP)** server in Python.
 
@@ -39,8 +40,11 @@ graph TD
    * Detects Acquisition of Signal (AOS), Loss of Signal (LOS), max elevation, and pass duration over any earth station.
 4. **RF Doppler Frequency Shift:**
    * Calculates instantaneous line-of-sight range rate and RF frequency offset for satellite communications (UHF/VHF/S-Band).
-5. **Model Context Protocol (MCP) Server:**
-   * Connects AI coding assistants (**Claude Desktop**, **Cursor**, **Windsurf**, and **Antigravity**) directly to live orbit propagation tools.
+5. **Orbital Maneuvers & Hohmann Transfer $\Delta v$ Budgets:**
+   * Two-impulse coplanar Hohmann transfer calculating periapsis/apoapsis burns and transfer duration ($t_{\text{tof}}$).
+   * Orbital inclination plane change $\Delta v_{\text{plane}} = 2 v \sin(\Delta i / 2)$ and combined apogee plane-change optimization.
+6. **Model Context Protocol (MCP) Server:**
+   * Connects AI coding assistants (**Claude Desktop**, **Cursor**, **Windsurf**, and **Antigravity**) directly to live orbit propagation, ground tracking, and orbital maneuver tools (`calculate_hohmann_transfer`).
 
 ---
 
