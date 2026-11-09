@@ -12,8 +12,9 @@ from orbital_telemetry.tracking.pass_predictor import PassPredictor
 SAMPLE_ISS_TLE = (
     "ISS (ZARYA)",
     "1 25544U 98067A   26034.50000000  .00016717  00000-0  10270-3 0  9001",
-    "2 25544  51.6400 208.5000 0005000 130.0000 230.0000 15.50000000450001"
+    "2 25544  51.6400 208.5000 0005000 130.0000 230.0000 15.50000000450001",
 )
+
 
 def handle_track(args):
     tle = TLE.from_lines(*SAMPLE_ISS_TLE)
@@ -32,14 +33,12 @@ def handle_track(args):
     print(f"  Orbital Period   : {tle.orbital_period_minutes:>8.2f} minutes")
     print("=" * 65)
 
+
 def handle_passes(args):
     tle = TLE.from_lines(*SAMPLE_ISS_TLE)
     prop = KeplerianPropagator(tle)
     station = GroundStation(
-        name=args.name,
-        latitude_deg=args.lat,
-        longitude_deg=args.lon,
-        min_elevation_deg=args.min_el
+        name=args.name, latitude_deg=args.lat, longitude_deg=args.lon, min_elevation_deg=args.min_el
     )
     predictor = PassPredictor(prop, station)
     passes = predictor.predict_passes(duration_hours=args.hours, step_s=30.0)
@@ -51,8 +50,11 @@ def handle_passes(args):
     print(f"{'Pass #':<8} | {'AOS (s)':<12} | {'LOS (s)':<12} | {'Duration':<10} | {'Max El':<10}")
     print("-" * 75)
     for i, p in enumerate(passes, 1):
-        print(f"{i:<8} | {p.aos_time_s:<12.1f} | {p.los_time_s:<12.1f} | {p.duration_seconds:<8.0f} s | {p.max_elevation_deg:>6.1f} deg")
+        print(
+            f"{i:<8} | {p.aos_time_s:<12.1f} | {p.los_time_s:<12.1f} | {p.duration_seconds:<8.0f} s | {p.max_elevation_deg:>6.1f} deg"
+        )
     print("=" * 75)
+
 
 def main():
     if hasattr(sys.stdout, "reconfigure"):
@@ -79,6 +81,7 @@ def main():
         handle_track(args)
     elif args.command == "passes":
         handle_passes(args)
+
 
 if __name__ == "__main__":
     main()

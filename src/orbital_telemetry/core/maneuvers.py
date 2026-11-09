@@ -15,6 +15,7 @@ from orbital_telemetry.core.constants import MU_EARTH_KM3_S2
 @dataclass
 class HohmannResult:
     """Analytical parameters of a Hohmann orbital transfer."""
+
     r1_km: float
     r2_km: float
     semi_major_axis_km: float
@@ -140,3 +141,73 @@ def combined_hohmann_plane_change(
         "transfer_duration_hours": round(hohmann.transfer_duration_hours, 3),
     }
 
+
+@dataclass
+class BiEllipticResult:
+    """Analytical parameters of a 3-impulse bi-elliptic transfer."""
+
+    r1_km: float
+    r2_km: float
+    rb_km: float
+    delta_v1_km_s: float
+    delta_v2_km_s: float
+    delta_v3_km_s: float
+    total_delta_v_km_s: float
+    total_duration_hours: float
+    is_more_efficient_than_hohmann: bool
+
+
+def bielliptic_transfer(
+    r1_km: float,
+    r2_km: float,
+    rb_km: float,
+    mu_km3_s2: float = MU_EARTH_KM3_S2,
+) -> BiEllipticResult:
+    """
+    Calculate 3-impulse bi-elliptic transfer through intermediate apoapsis rb > r2 > r1.
+    """
+    if r1_km <= 0 or r2_km <= 0 or rb_km <= 0:
+        raise ValueError("All orbital radii (r1, r2, rb) must be strictly positive.")
+    if rb_km <= r2_km or rb_km <= r1_km:
+        raise ValueError("Intermediate radius rb must be strictly greater than max(r1, r2).")
+
+    # Circular velocities
+    v_c1 = math.sqrt(mu_km3_s2 / r1_km)
+    v_c2 = math.sqrt(mu_km3_s2 / r2_km)
+
+    # Ellipse 1: r1 to rb
+    a1 = (r1_km + rb_km) / 2.0
+    v1_p = math.sqrt(mu_km3_s2 * (2.0 / r1_km - 1.0 / a1))
+    v1_a = math.sqrt(mu_km3_s2 * (2.0 / rb_km - 1.0 / a1))
+
+    # Ellipse 2: rb to r2
+    a2 = (r2_km + rb_km) / 2.0
+    v2_a = math.sqrt(mu_km3_s2 * (2.0 / rb_km - 1.0 / a2))
+    v2_p = math.sqrt(mu_km3_s2 * (2.0 / r2_km - 1.0 / a2))
+
+    # Delta-V burns
+    dv1 = abs(v1_p - v_c1)
+    dv2 = abs(v2_a - v1_a)
+    dv3 = abs(v_c2 - v2_p)
+    total_dv = dv1 + dv2 + dv3
+
+    # Total duration (half periods of both transfer ellipses)
+    tof1 = math.pi * math.sqrt((a1**3) / mu_km3_s2)
+    tof2 = math.pi * math.sqrt((a2**3) / mu_km3_s2)
+    total_tof_hours = (tof1 + tof2) / 3600.0
+
+    # Compare with standard 2-impulse Hohmann
+    hohmann = hohmann_transfer(r1_km, r2_km, mu_km3_s2)
+    more_efficient = total_dv < hohmann.total_delta_v_km_s
+
+    return BiEllipticResult(
+        r1_km=r1_km,
+        r2_km=r2_km,
+        rb_km=rb_km,
+        delta_v1_km_s=round(dv1, 4),
+        delta_v2_km_s=round(dv2, 4),
+        delta_v3_km_s=round(dv3, 4),
+        total_delta_v_km_s=round(total_dv, 4),
+        total_duration_hours=round(total_tof_hours, 3),
+        is_more_efficient_than_hohmann=more_efficient,
+    )

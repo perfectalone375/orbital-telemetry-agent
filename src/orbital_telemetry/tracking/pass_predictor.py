@@ -12,6 +12,7 @@ from orbital_telemetry.tracking.ground_station import GroundStation
 @dataclass
 class SatellitePass:
     """A single ground station visible satellite pass."""
+
     aos_time_s: float
     los_time_s: float
     duration_seconds: float
@@ -30,7 +31,9 @@ class PassPredictor:
         self.propagator = propagator
         self.station = station
 
-    def predict_passes(self, start_time_s: float = 0.0, duration_hours: float = 24.0, step_s: float = 30.0) -> List[SatellitePass]:
+    def predict_passes(
+        self, start_time_s: float = 0.0, duration_hours: float = 24.0, step_s: float = 30.0
+    ) -> List[SatellitePass]:
         passes = []
         in_pass = False
 
@@ -71,7 +74,7 @@ class PassPredictor:
                             max_elevation_deg=round(max_el, 2),
                             max_elevation_time_s=max_el_t,
                             aos_azimuth_deg=aos_az,
-                            los_azimuth_deg=los_az
+                            los_azimuth_deg=los_az,
                         )
                     )
 

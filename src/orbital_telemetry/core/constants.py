@@ -16,7 +16,7 @@ R_EARTH_POLAR_KM: float = 6356.7523142
 WGS84_FLATTENING: float = 1.0 / 298.257223563
 
 # First eccentricity squared e^2 = 2f - f^2
-WGS84_E2: float = 2.0 * WGS84_FLATTENING - (WGS84_FLATTENING ** 2)
+WGS84_E2: float = 2.0 * WGS84_FLATTENING - (WGS84_FLATTENING**2)
 
 # Earth J2 zonal harmonic oblateness coefficient
 J2_EARTH: float = 1.08262668e-3

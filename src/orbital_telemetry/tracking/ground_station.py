@@ -10,6 +10,7 @@ from orbital_telemetry.core.coordinates import GeodeticCoordinates, ECICoordinat
 @dataclass
 class TopocentricCoordinates:
     """Observer-centric relative tracking coordinates."""
+
     azimuth_deg: float
     elevation_deg: float
     slant_range_km: float
@@ -19,6 +20,7 @@ class TopocentricCoordinates:
 @dataclass
 class GroundStation:
     """Tracking earth station model."""
+
     name: str
     latitude_deg: float
     longitude_deg: float
@@ -28,9 +30,7 @@ class GroundStation:
     @property
     def geodetic(self) -> GeodeticCoordinates:
         return GeodeticCoordinates(
-            latitude_deg=self.latitude_deg,
-            longitude_deg=self.longitude_deg,
-            altitude_km=self.altitude_m / 1000.0
+            latitude_deg=self.latitude_deg, longitude_deg=self.longitude_deg, altitude_km=self.altitude_m / 1000.0
         )
 
     def compute_topocentric(self, sat_eci: ECICoordinates, gmst_rad: float) -> TopocentricCoordinates:
@@ -43,7 +43,7 @@ class GroundStation:
         dy = sat_ecef.y_km - gs_ecef.y_km
         dz = sat_ecef.z_km - gs_ecef.z_km
 
-        range_km = math.sqrt(dx ** 2 + dy ** 2 + dz ** 2)
+        range_km = math.sqrt(dx**2 + dy**2 + dz**2)
 
         # Transform to Topocentric South-East-Zenith (SEZ) frame
         lat_rad = self.geodetic.latitude_rad
@@ -73,5 +73,5 @@ class GroundStation:
             azimuth_deg=round(az_deg, 2),
             elevation_deg=round(el_deg, 2),
             slant_range_km=round(range_km, 2),
-            is_visible=is_vis
+            is_visible=is_vis,
         )

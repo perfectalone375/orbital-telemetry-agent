@@ -17,6 +17,7 @@ from orbital_telemetry.core.coordinates import ECICoordinates, GeodeticCoordinat
 @dataclass
 class OrbitState:
     """Instantaneous dynamic orbit state."""
+
     time_since_epoch_s: float
     position_eci: ECICoordinates
     velocity_eci_km_s: tuple
@@ -39,7 +40,7 @@ class KeplerianPropagator:
 
         # J2 secular perturbations
         # Nodal regression rate (dRAAN/dt)
-        p = self.a * (1.0 - self.e ** 2)
+        p = self.a * (1.0 - self.e**2)
         factor = -1.5 * J2_EARTH * (R_EARTH_EQUATORIAL_KM / p) ** 2 * self.n0
         self.raan_dot = factor * math.cos(self.inc)
 
@@ -70,7 +71,7 @@ class KeplerianPropagator:
         e_anom = self.solve_kepler(m_t)
 
         # True anomaly nu
-        sin_nu = (math.sqrt(1.0 - self.e ** 2) * math.sin(e_anom)) / (1.0 - self.e * math.cos(e_anom))
+        sin_nu = (math.sqrt(1.0 - self.e**2) * math.sin(e_anom)) / (1.0 - self.e * math.cos(e_anom))
         cos_nu = (math.cos(e_anom) - self.e) / (1.0 - self.e * math.cos(e_anom))
         nu = math.atan2(sin_nu, cos_nu)
 
@@ -94,7 +95,7 @@ class KeplerianPropagator:
         v_mag = math.sqrt(MU_EARTH_KM3_S2 * (2.0 / r - 1.0 / self.a))
 
         # Velocity components in orbital plane
-        p = self.a * (1.0 - self.e ** 2)
+        p = self.a * (1.0 - self.e**2)
         h = math.sqrt(MU_EARTH_KM3_S2 * p)  # Specific angular momentum
         vr = (MU_EARTH_KM3_S2 / h) * self.e * math.sin(nu)
         vt = (MU_EARTH_KM3_S2 / h) * (1.0 + self.e * math.cos(nu))
@@ -119,5 +120,5 @@ class KeplerianPropagator:
             velocity_eci_km_s=(vx_eci, vy_eci, vz_eci),
             geodetic=geodetic,
             orbital_speed_km_s=v_mag,
-            true_anomaly_deg=math.degrees(nu) % 360.0
+            true_anomaly_deg=math.degrees(nu) % 360.0,
         )
