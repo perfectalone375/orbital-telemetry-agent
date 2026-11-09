@@ -24,7 +24,7 @@ class DopplerCalculator:
         dx = sat_pos_eci.x_km - station_pos_eci.x_km
         dy = sat_pos_eci.y_km - station_pos_eci.y_km
         dz = sat_pos_eci.z_km - station_pos_eci.z_km
-        range_km = math.sqrt(dx ** 2 + dy ** 2 + dz ** 2)
+        range_km = math.sqrt(dx**2 + dy**2 + dz**2)
 
         if range_km < 1e-6:
             return {"range_rate_km_s": 0.0, "doppler_shift_hz": 0.0, "received_frequency_hz": carrier_frequency_hz}
@@ -46,5 +46,5 @@ class DopplerCalculator:
             "range_rate_km_s": round(range_rate_km_s, 4),
             "doppler_shift_hz": round(shift_hz, 2),
             "received_frequency_hz": round(received_hz, 2),
-            "is_approaching": range_rate_km_s < 0
+            "is_approaching": range_rate_km_s < 0,
         }

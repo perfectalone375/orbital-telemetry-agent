@@ -1,9 +1,11 @@
 import pytest
 
+
 def test_kepler_solver(propagator):
     # For small e, M ~ E
     e_anom = propagator.solve_kepler(0.5)
     assert pytest.approx(e_anom, abs=1e-3) == 0.5
+
 
 def test_propagation_dynamics(propagator):
     state_0 = propagator.propagate(0.0)

@@ -11,6 +11,7 @@ class TLE:
     """
     Structured representation of a NORAD Two-Line Element set.
     """
+
     name: str
     norad_id: int
     classification: str
@@ -57,7 +58,7 @@ class TLE:
         # a = (mu / n^2)^(1/3)
         mu = 398600.4418
         n = self.mean_motion_rad_s
-        return (mu / (n ** 2)) ** (1.0 / 3.0)
+        return (mu / (n**2)) ** (1.0 / 3.0)
 
     @property
     def perigee_altitude_km(self) -> float:
@@ -86,7 +87,7 @@ class TLE:
         # BSTAR
         bstar_mantissa = float(line1[53:59]) * 1e-5
         bstar_exp = int(line1[59:61])
-        bstar = bstar_mantissa * (10 ** bstar_exp)
+        bstar = bstar_mantissa * (10**bstar_exp)
 
         # Line 2
         inc = float(line2[8:16])

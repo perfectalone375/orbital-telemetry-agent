@@ -1,4 +1,4 @@
-﻿"""
+"""
 Coordinate transformations: ECI (Inertial), ECEF (Terrestrial), and WGS-84 Geodetic.
 """
 
@@ -14,13 +14,14 @@ from orbital_telemetry.core.constants import (
 @dataclass
 class ECICoordinates:
     """Earth-Centered Inertial (J2000 / TEME) position in kilometers."""
+
     x_km: float
     y_km: float
     z_km: float
 
     @property
     def radius_km(self) -> float:
-        return math.sqrt(self.x_km ** 2 + self.y_km ** 2 + self.z_km ** 2)
+        return math.sqrt(self.x_km**2 + self.y_km**2 + self.z_km**2)
 
     def to_ecef(self, gmst_rad: float) -> "ECEFCoordinates":
         """Rotate ECI to ECEF by Greenwich Mean Sidereal Time (GMST)."""
@@ -36,6 +37,7 @@ class ECICoordinates:
 @dataclass
 class ECEFCoordinates:
     """Earth-Centered Earth-Fixed position in kilometers."""
+
     x_km: float
     y_km: float
     z_km: float
@@ -45,34 +47,28 @@ class ECEFCoordinates:
         a = R_EARTH_EQUATORIAL_KM
         b = a * (1.0 - WGS84_FLATTENING)
         e2 = WGS84_E2
-        e_prime2 = (a ** 2 - b ** 2) / (b ** 2)
+        e_prime2 = (a**2 - b**2) / (b**2)
 
-        p = math.sqrt(self.x_km ** 2 + self.y_km ** 2)
+        p = math.sqrt(self.x_km**2 + self.y_km**2)
         theta = math.atan2(self.z_km * a, p * b)
 
         sin_t = math.sin(theta)
         cos_t = math.cos(theta)
 
-        lat = math.atan2(
-            self.z_km + e_prime2 * b * (sin_t ** 3),
-            p - e2 * a * (cos_t ** 3)
-        )
+        lat = math.atan2(self.z_km + e_prime2 * b * (sin_t**3), p - e2 * a * (cos_t**3))
         lon = math.atan2(self.y_km, self.x_km)
 
         sin_lat = math.sin(lat)
-        n = a / math.sqrt(1.0 - e2 * (sin_lat ** 2))
+        n = a / math.sqrt(1.0 - e2 * (sin_lat**2))
         alt = (p / math.cos(lat)) - n
 
-        return GeodeticCoordinates(
-            latitude_deg=math.degrees(lat),
-            longitude_deg=math.degrees(lon),
-            altitude_km=alt
-        )
+        return GeodeticCoordinates(latitude_deg=math.degrees(lat), longitude_deg=math.degrees(lon), altitude_km=alt)
 
 
 @dataclass
 class GeodeticCoordinates:
     """WGS-84 Sub-satellite point geodetic coordinates."""
+
     latitude_deg: float
     longitude_deg: float
     altitude_km: float
@@ -93,7 +89,7 @@ class GeodeticCoordinates:
 
         sin_lat = math.sin(lat_rad)
         cos_lat = math.cos(lat_rad)
-        n = a / math.sqrt(1.0 - e2 * (sin_lat ** 2))
+        n = a / math.sqrt(1.0 - e2 * (sin_lat**2))
 
         x = (n + self.altitude_km) * cos_lat * math.cos(lon_rad)
         y = (n + self.altitude_km) * cos_lat * math.sin(lon_rad)
